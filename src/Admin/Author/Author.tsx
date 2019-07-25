@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
+import { FormControl, InputLabel, Input, FormHelperText, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { StateContext } from '../../State/state';
 
@@ -70,7 +70,7 @@ class Author extends React.Component<Props,State> {
     render() {
 
         const { classes } = this.props;
-        const [ {email, slackHandle} ] = this.context;
+        const [ {email, slackHandle, slackWebhookToken}, dispatch ] = this.context;
 
         return (
             <div>
@@ -104,6 +104,18 @@ class Author extends React.Component<Props,State> {
                         <FormHelperText id="error-text">Provide a Author's valid slack handle. It should have a @ in front of it.</FormHelperText>
                     )}
                 </FormControl>
+                <TextField
+                    id="slackWebhookToken"
+                    fullWidth
+                    label={"Slack Webhook token"}
+                    value={slackWebhookToken}
+                    onChange={(event: any) => {
+                        dispatch({
+                            type: 'slack_webhook_update',
+                            slackWebhookToken: event.target.value
+                        });
+                    }}
+                />
             </div>
         );
     }

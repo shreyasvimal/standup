@@ -11,6 +11,7 @@ export interface GlobalState {
   slackHandle: string;
   questions: string[];
   slackHandles: string;
+  slackWebhookToken: string;
 }
 
 const initialState = {
@@ -22,7 +23,8 @@ const initialState = {
     'What are my blockers, if any?',
     'Any callouts the team needs to know, if any?'
   ],
-  slackHandles: ''
+  slackHandles: '',
+  slackWebhookToken: ''
 } as GlobalState;
 
 const reducer = (state: GlobalState, action: any) => {
@@ -47,6 +49,12 @@ const reducer = (state: GlobalState, action: any) => {
         return {
           ...state,
           slackHandles: action.slackHandles
+        };
+    
+    case 'slack_webhook_update':
+        return {
+          ...state,
+          slackWebhookToken: action.slackWebhookToken
         };
       
     default:
