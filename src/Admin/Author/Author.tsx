@@ -40,10 +40,10 @@ class Author extends React.Component<Props,State> {
                 type: 'author_email_update',
                 email: event.target.value
             });
-        } else if( name === 'slackHandle' ) {
+        } else if( name === 'slackChannel' ) {
             dispatch({
                 type: 'author_slack_update',
-                slackHandle: event.target.value
+                slackChannel: event.target.value
             });
         }
     }
@@ -60,7 +60,7 @@ class Author extends React.Component<Props,State> {
     handleSlackBlur(event: any) {
         const { value } = event.target;
         let slackError: boolean = false;
-        if( value !== '' && value.indexOf('@') !== 0 ) {
+        if( value === '' ) {
             slackError = true;
         } 
         this.setState({ slackError });
@@ -70,7 +70,7 @@ class Author extends React.Component<Props,State> {
     render() {
 
         const { classes } = this.props;
-        const [ {email, slackHandle, slackWebhookToken}, dispatch ] = this.context;
+        const [ {email, slackChannel, slackWebhookToken}, dispatch ] = this.context;
 
         return (
             <div>
@@ -90,18 +90,18 @@ class Author extends React.Component<Props,State> {
                     )}
                 </FormControl>
                 <FormControl className={classes.textField} error={this.state.slackError} fullWidth>
-                    <InputLabel htmlFor="slackHandle">Author Slack Handle</InputLabel>
+                    <InputLabel htmlFor="slackChannel">Slack Channel</InputLabel>
                     <Input
-                        id="slackHandle"
-                        name="slackHandle"
-                        value={slackHandle}
+                        id="slackChannel"
+                        name="slackChannel"
+                        value={slackChannel}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            this.handleChange('slackHandle', event)
+                            this.handleChange('slackChannel', event)
                         }}
                         onBlur={this.handleSlackBlur}
                     />
                     {this.state.slackError && (
-                        <FormHelperText id="error-text">Provide a Author's valid slack handle. It should have a @ in front of it.</FormHelperText>
+                        <FormHelperText id="error-text">Provide a valid slack channel.</FormHelperText>
                     )}
                 </FormControl>
                 <TextField

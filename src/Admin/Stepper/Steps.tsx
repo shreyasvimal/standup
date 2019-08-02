@@ -4,6 +4,9 @@ import { withStyles } from '@material-ui/styles';
 import Author from '../Author/Author';
 import Questions from '../Questions/Questions';
 import SlackHandle from '../Slack/SlackHandle';
+import { doPost } from '../../Utility/Http';
+import { StateContext } from '../../State/state';
+import { withRouter, RouteComponentProps } from 'react-router';
 
 const styles = {
     root: {
@@ -25,9 +28,11 @@ interface Props {
     classes?: any;
 }
 
-class Steps extends React.Component<Props, State> {
+class Steps extends React.Component<Props & RouteComponentProps, State> {
 
-    constructor(props: Props) {
+    static contextType = StateContext;
+
+    constructor(props: Props & RouteComponentProps) {
         super(props);
 
         this.state = {
@@ -45,6 +50,18 @@ class Steps extends React.Component<Props, State> {
         let { activeStep } = this.state;
         if(activeStep !== (this.getSteps().length - 1) ) {
             this.setState({ activeStep: activeStep + 1 })
+        } else {
+            const data = this.context[0];
+            const dispatch = this.context[1];
+            doPost('http://localhost:4000/standup/api/create', data).then(res => {
+                if(res.status === 200) {
+                    dispatch({
+                        type: 'standup_response',
+                        standUpResponse: res.data
+                    });
+                    this.props.history.push('/standup/admin/view')
+                }
+            });
         }
     }
 
@@ -115,4 +132,4 @@ class Steps extends React.Component<Props, State> {
     }
 }
 
-export default withStyles(styles)(Steps);
+export default withStyles(styles)(withRouter(Steps));

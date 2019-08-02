@@ -3,20 +3,15 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 import Header from './Header/Header';
 import { StateProvider } from './State/state';
+import { GlobalState } from './Utility/models';
 
 const AdminComponent = React.lazy(() => import('./Admin/Admin'));
-
-export interface GlobalState {
-  email: string;
-  slackHandle: string;
-  questions: string[];
-  slackHandles: string;
-  slackWebhookToken: string;
-}
+const AdminViewComponent = React.lazy(() => import('./Admin/View/View'));
+const MemberViewComponent = React.lazy(() => import('./Member/View/View'));
 
 const initialState = {
   email: '',
-  slackHandle: '',
+  slackChannel: '',
   questions: [
     'What did I work on yesterday/previous work day?',
     'What will I work on today?',
@@ -37,7 +32,7 @@ const reducer = (state: GlobalState, action: any) => {
     case 'author_slack_update':
         return {
           ...state,
-          slackHandle: action.slackHandle
+          slackChannel: action.slackChannel
         };
     case 'questions_update':
         return {
@@ -56,6 +51,12 @@ const reducer = (state: GlobalState, action: any) => {
           ...state,
           slackWebhookToken: action.slackWebhookToken
         };
+    
+    case 'standup_response':
+      return {
+        ...state,
+        standUpResponse: action.standUpResponse
+      }
       
     default:
       return state;
@@ -70,9 +71,19 @@ class App extends React.Component<{}, {}> {
           <Header/>
           <Container maxWidth="sm">
             <Router>
-              <Route exact path="/standup/create" component={() => (
+              <Route exact path="/standup/admin/create" component={() => (
                 <React.Suspense fallback={<div>Loading</div>}>
                   <AdminComponent/>
+                </React.Suspense>
+              )}/>
+              <Route exact path="/standup/admin/view" component={() => (
+                <React.Suspense fallback={<div>Loading</div>}>
+                  <AdminViewComponent/>
+                </React.Suspense>
+              )}/>
+              <Route exact path="/standup/team/view/:name/:member" component={() => (
+                <React.Suspense fallback={<div>Loading</div>}>
+                  <MemberViewComponent/>
                 </React.Suspense>
               )}/>
             </Router>
